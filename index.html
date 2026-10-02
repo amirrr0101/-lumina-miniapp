@@ -3,203 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LuminaAI</title>
+<title>LUMINA</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-  :root {
-    --bg: #0e0e12;
-    --card: #1a1a22;
-    --card-hover: #23232e;
-    --text: #ffffff;
-    --text-secondary: #9a9aa5;
-    --accent: #8b7cf6;
-    --border: #2a2a35;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .wrap {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px 16px 32px;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  .header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    background: linear-gradient(90deg, #8b7cf6, #f06292);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .header p {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-  .balance-pill {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 8px 18px;
-    width: fit-content;
-    margin: 12px auto 0;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .section-title {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin: 20px 0 10px 4px;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .card:active { background: var(--card-hover); transform: scale(0.97); }
-  .card .icon { font-size: 26px; }
-  .card .title { font-size: 15px; font-weight: 600; }
-  .card .subtitle { font-size: 12px; color: var(--text-secondary); line-height: 1.35; }
-  .card.wide { grid-column: span 2; flex-direction: row; align-items: center; }
-  .card.wide .icon { font-size: 22px; }
-  .card.wide .text { flex: 1; }
-  .card.wide .arrow { color: var(--text-secondary); font-size: 18px; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .footer-note {
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 24px;
-    line-height: 1.5;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #16152A; color: #EEEDFE;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .page { max-width: 480px; margin: 0 auto;
+    padding: calc(18px + env(safe-area-inset-top, 0px)) 14px calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .head { text-align: center; margin-bottom: 16px; }
+  .logo { font-size: 24px; font-weight: 600; color: #AFA9EC; letter-spacing: 2px; }
+  .sub { color: #8A89A0; font-size: 13px; margin-top: 2px; }
+  .pill { display: inline-flex; gap: 8px; align-items: center; background: #26215C; border: 1px solid #3C3489;
+    border-radius: 999px; padding: 7px 16px; margin-top: 12px; font-size: 13px; }
+  .pill .dot { color: #7F77DD; }
+  .hero { background: #3C3489; border-radius: 18px; padding: 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 16px; cursor: pointer; }
+  .hero .ic { width: 50px; height: 50px; border-radius: 14px; background: #534AB7; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  .hero .t { font-weight: 600; font-size: 17px; }
+  .hero .s { color: #CECBF6; font-size: 13px; margin-top: 2px; }
+  .hero .ch { margin-left: auto; color: #AFA9EC; font-size: 20px; }
+  .label { color: #8A89A0; font-size: 12px; margin: 0 0 8px 4px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .tile { background: #1F1E36; border: 1px solid #2C2C4A; border-radius: 16px; padding: 14px; cursor: pointer; }
+  .tile i { font-size: 22px; }
+  .tile .t { font-weight: 600; margin-top: 6px; font-size: 15px; }
+  .tile .s { color: #8A89A0; font-size: 12px; margin-top: 2px; line-height: 1.35; }
+  .tile.hot { background: #26215C; border: 1.5px solid #7F77DD; }
+  .tile.hot .s { color: #CECBF6; }
+  .row { background: #1F1E36; border: 1px solid #2C2C4A; border-radius: 16px; padding: 13px 14px;
+    display: flex; gap: 10px; align-items: center; cursor: pointer; font-size: 15px; }
+  .hero:active, .tile:active, .row:active { transform: scale(0.97); }
+  .demo { background: #633806; color: #FAC775; font-size: 12px; text-align: center; padding: 6px; border-radius: 10px; margin-bottom: 12px; display: none; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <h1>✨ LUMINA AI</h1>
-    <p>Твоя команда нейросетей в одном чате</p>
-    <div class="balance-pill" id="balancePill">🪙 —</div>
+<div class="page">
+  <div class="demo" id="demo">Демо-режим: открой через бота в Telegram</div>
+
+  <div class="head">
+    <div class="logo">LUMINA</div>
+    <div class="sub">5 нейросетей в одном чате</div>
+    <div class="pill"><i class="ti ti-coin"></i><span id="bal">— токенов</span><span id="tierWrap" style="display:none;"><span class="dot">·</span> <i class="ti ti-star"></i> <span id="tier"></span></span></div>
   </div>
 
-  <div class="section-title">Выбери, с кем говорить</div>
+  <div class="hero" data-action="nanobanana">
+    <div class="ic"><i class="ti ti-photo"></i></div>
+    <div><div class="t">Nano Banana</div><div class="s" id="nbSub">Рисует и правит фото</div></div>
+    <i class="ti ti-chevron-right ch"></i>
+  </div>
+
+  <div class="label">Нейросети</div>
   <div class="grid">
-    <div class="card" onclick="pick('claude')">
-      <div class="icon">💜</div>
-      <div class="title">Claude</div>
-      <div class="subtitle">Тексты, код, анализ</div>
-    </div>
-    <div class="card" onclick="pick('gpt')">
-      <div class="icon">💚</div>
-      <div class="title">GPT</div>
-      <div class="subtitle">Универсальный чат</div>
-    </div>
-    <div class="card" onclick="pick('gemini')">
-      <div class="icon">💙</div>
-      <div class="title">Gemini</div>
-      <div class="subtitle">Быстро и по делу</div>
-    </div>
-    <div class="card" onclick="pick('nanobanana')">
-      <div class="icon">🍌</div>
-      <div class="title">Nano Banana</div>
-      <div class="subtitle">Картинки и фото</div>
-    </div>
-    <div class="card wide" onclick="pick('seedance')">
-      <div class="icon">🎬</div>
-      <div class="text">
-        <div class="title">Seedance</div>
-        <div class="subtitle">Видео по описанию или из фото</div>
-      </div>
-      <div class="arrow">›</div>
-    </div>
+    <div class="tile" data-action="claude"><i class="ti ti-message-circle" style="color:#AFA9EC;"></i><div class="t">Claude</div><div class="s">10 в день бесплатно</div></div>
+    <div class="tile" data-action="gpt"><i class="ti ti-message-dots" style="color:#5DCAA5;"></i><div class="t">GPT</div><div class="s">10 в день бесплатно</div></div>
+    <div class="tile" data-action="gemini"><i class="ti ti-bolt" style="color:#85B7EB;"></i><div class="t">Gemini</div><div class="s">Бесплатно</div></div>
+    <div class="tile" data-action="seedance"><i class="ti ti-movie" style="color:#F0997B;"></i><div class="t">Seedance</div><div class="s" id="vidSub">Видео</div></div>
   </div>
 
-  <div class="section-title">Аккаунт</div>
-  <div class="row2">
-    <div class="card" onclick="pick('profile')">
-      <div class="icon">👤</div>
-      <div class="title">Профиль</div>
-      <div class="subtitle">Баланс и настройки</div>
-    </div>
-    <div class="card" onclick="pick('topup')">
-      <div class="icon">💳</div>
-      <div class="title">Пополнить</div>
-      <div class="subtitle">Звёзды Telegram</div>
-    </div>
-    <div class="card" onclick="pick('referral')">
-      <div class="icon">👥</div>
-      <div class="title">Друзья</div>
-      <div class="subtitle">Бесплатные токены</div>
-    </div>
-    <div class="card" onclick="pick('daily')">
-      <div class="icon">🎁</div>
-      <div class="title">Бонус дня</div>
-      <div class="subtitle">Заходи каждый день</div>
-    </div>
+  <div class="grid">
+    <div class="tile" data-action="roles"><i class="ti ti-masks-theater" style="color:#ED93B1;"></i><div class="t">Роли</div><div class="s">11 ролей, Обычный — бесплатно</div></div>
+    <div class="tile hot" data-action="subscription"><i class="ti ti-star" style="color:#FAC775;"></i><div class="t">Подписка</div><div class="s" id="subSub">выгоднее пополнения</div></div>
   </div>
 
-  <div class="footer-note">Нажми на карточку — вернёшься в чат с ботом,<br>и он сразу поймёт, что выбрано</div>
+  <div class="label">Аккаунт</div>
+  <div class="grid" style="margin-bottom:0;">
+    <div class="row" data-action="profile"><i class="ti ti-user"></i>Профиль</div>
+    <div class="row" data-action="topup"><i class="ti ti-credit-card"></i>Пополнить</div>
+    <div class="row" data-action="referral"><i class="ti ti-users"></i>Друзья</div>
+    <div class="row" data-action="daily"><i class="ti ti-gift"></i>Бонус дня</div>
+  </div>
 </div>
 
 <script>
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
+  const tg = window.Telegram && window.Telegram.WebApp;
+  const inTelegram = !!(tg && tg.platform && tg.platform !== 'unknown');
+  if (tg) { tg.ready(); tg.expand(); }
+  if (!inTelegram) document.getElementById('demo').style.display = 'block';
 
-    // Подхватываем тему Telegram, если доступна
-    const applyTheme = () => {
-      const p = tg.themeParams || {};
-      if (p.bg_color) document.documentElement.style.setProperty('--bg', p.bg_color);
-      if (p.secondary_bg_color) document.documentElement.style.setProperty('--card', p.secondary_bg_color);
-      if (p.text_color) document.documentElement.style.setProperty('--text', p.text_color);
-      if (p.hint_color) document.documentElement.style.setProperty('--text-secondary', p.hint_color);
-    };
-    applyTheme();
-    tg.onEvent('themeChanged', applyTheme);
+  // Бот передаёт данные в ссылке: баланс, тариф, цены, тарифы подписки
+  const q = new URLSearchParams(location.search);
+  const prices = (q.get('p') || '2,10,18,7').split(',');
+  const minSub = (q.get('s') || 'START:199').split(',')[0].split(':')[1];
 
-    // Баланс передаётся ботом через initData (start_param) — см. бэкенд
-    const params = new URLSearchParams(tg.initData);
-    const balance = tg.initDataUnsafe?.start_param;
+  document.getElementById('bal').textContent = (q.get('b') ?? '—') + ' токенов';
+  if (q.get('t')) {
+    document.getElementById('tier').textContent = q.get('t') + (q.get('u') ? ' до ' + q.get('u').slice(0, 5) : '');
+    document.getElementById('tierWrap').style.display = 'inline';
   }
+  document.getElementById('nbSub').textContent = 'Рисует и правит фото · от ' + prices[0] + ' токенов';
+  document.getElementById('vidSub').textContent = 'Видео · ' + prices[3] + ' токенов';
+  document.getElementById('subSub').textContent = 'от ' + minSub + ' звёзд · выгоднее';
 
-  function pick(action) {
-    if (!tg) {
-      alert('Открой это приложение через кнопку в Telegram-боте.');
-      return;
-    }
-    tg.HapticFeedback?.impactOccurred('light');
-    tg.sendData(JSON.stringify({ action }));
-    tg.close();
-  }
+  document.querySelectorAll('[data-action]').forEach(el => el.onclick = () => {
+    const payload = JSON.stringify({ action: el.dataset.action });
+    if (!inTelegram) { alert('Демо-режим: в Telegram это отправилось бы боту:\n' + payload); return; }
+    tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light');
+    tg.sendData(payload);  // Telegram сам закроет приложение и передаст команду боту
+  });
 </script>
 </body>
 </html>
+
