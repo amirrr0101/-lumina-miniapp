@@ -3,203 +3,293 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>LuminaAI</title>
+<title>LUMINA</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --bg: #0e0e12;
-    --card: #1a1a22;
-    --card-hover: #23232e;
-    --text: #ffffff;
-    --text-secondary: #9a9aa5;
-    --accent: #8b7cf6;
-    --border: #2a2a35;
+    --bg: #12121C;
+    --card: #1E1D33;
+    --card-2: #26215C;
+    --accent: #7F77DD;
+    --accent-strong: #534AB7;
+    --text: #EEEDFE;
+    --muted: #8A89A0;
+    --line: #2C2C4A;
+    --gold: #FAC775;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .wrap {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px 16px 32px;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  .header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    background: linear-gradient(90deg, #8b7cf6, #f06292);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .header p {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-  .balance-pill {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 8px 18px;
-    width: fit-content;
-    margin: 12px auto 0;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .section-title {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin: 20px 0 10px 4px;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .card:active { background: var(--card-hover); transform: scale(0.97); }
-  .card .icon { font-size: 26px; }
-  .card .title { font-size: 15px; font-weight: 600; }
-  .card .subtitle { font-size: 12px; color: var(--text-secondary); line-height: 1.35; }
-  .card.wide { grid-column: span 2; flex-direction: row; align-items: center; }
-  .card.wide .icon { font-size: 22px; }
-  .card.wide .text { flex: 1; }
-  .card.wide .arrow { color: var(--text-secondary); font-size: 18px; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .footer-note {
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 24px;
-    line-height: 1.5;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { padding-top: env(safe-area-inset-top, 0px); }
+  .page { max-width: 480px; margin: 0 auto; padding: 16px 14px 96px; }
+  .tab { display: none; }
+  .tab.active { display: block; }
+
+  .hello { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent-strong);
+    display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 18px; }
+  .hello h1 { font-size: 18px; font-weight: 600; }
+  .hello p { font-size: 13px; color: var(--muted); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+  .label { font-size: 12px; color: var(--muted); margin: 18px 4px 8px; }
+
+  textarea { width: 100%; min-height: 84px; resize: none; background: var(--card); color: var(--text);
+    border: 1px solid var(--line); border-radius: 14px; padding: 12px; font-size: 15px; font-family: inherit; outline: none; }
+  textarea:focus { border-color: var(--accent); }
+
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .chip { background: var(--card-2); border: 1px solid transparent; color: var(--text); border-radius: 999px;
+    padding: 7px 12px; font-size: 13px; cursor: pointer; }
+  .chip.on { border-color: var(--accent); background: var(--accent-strong); }
+
+  .btn { width: 100%; border: none; border-radius: 14px; padding: 14px; font-size: 16px; font-weight: 600;
+    background: var(--accent-strong); color: #fff; cursor: pointer; margin-top: 12px; }
+  .btn:active { transform: scale(0.98); }
+  .btn.ghost { background: var(--card); border: 1px solid var(--line); font-weight: 500; }
+  .err { color: #F09595; font-size: 13px; margin-top: 8px; display: none; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; cursor: pointer; }
+  .tile:active { transform: scale(0.97); }
+  .tile .e { font-size: 22px; }
+  .tile .t { font-weight: 600; margin-top: 4px; font-size: 14px; }
+  .tile .s { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+  .seg { display: flex; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 12px; }
+  .seg button { flex: 1; border: none; background: transparent; color: var(--muted); padding: 10px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .seg button.on { background: var(--accent-strong); color: #fff; }
+
+  .tier { position: relative; }
+  .tier.hot { border: 2px solid var(--accent); }
+  .badge { position: absolute; top: -10px; right: 12px; background: var(--accent); color: #fff; font-size: 11px; padding: 3px 9px; border-radius: 999px; }
+  .tier h3 { font-size: 17px; }
+  .tier .price { color: var(--gold); font-weight: 600; margin: 2px 0 8px; }
+  .tier li { list-style: none; font-size: 13px; color: var(--text); margin: 4px 0; }
+  .tier li span { color: var(--muted); }
+
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 2px; border-bottom: 1px solid var(--line); font-size: 15px; cursor: pointer; }
+  .row:last-child { border-bottom: none; }
+  .row .r { color: var(--muted); }
+
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; background: #16152A; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-around; padding: 8px 0 calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .nav button { background: none; border: none; color: var(--muted); font-size: 11px; display: flex; flex-direction: column;
+    align-items: center; gap: 2px; cursor: pointer; min-width: 64px; }
+  .nav button .i { font-size: 20px; }
+  .nav button.on { color: var(--accent); }
+  .demo { background: #633806; color: #FAC775; font-size: 12px; text-align: center; padding: 6px; border-radius: 10px; margin-bottom: 12px; display: none; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <h1>✨ LUMINA AI</h1>
-    <p>Твоя команда нейросетей в одном чате</p>
-    <div class="balance-pill" id="balancePill">🪙 —</div>
-  </div>
+<div class="page">
+  <div class="demo" id="demo">Демо-режим: открой через бота в Telegram, чтобы всё работало</div>
 
-  <div class="section-title">Выбери, с кем говорить</div>
-  <div class="grid">
-    <div class="card" onclick="pick('claude')">
-      <div class="icon">💜</div>
-      <div class="title">Claude</div>
-      <div class="subtitle">Тексты, код, анализ</div>
+  <!-- ГЛАВНАЯ -->
+  <section class="tab active" id="tab-home">
+    <div class="hello">
+      <div class="avatar" id="avatar">L</div>
+      <div><h1 id="hello">Привет!</h1><p id="balanceLine">🪙 — токенов</p></div>
     </div>
-    <div class="card" onclick="pick('gpt')">
-      <div class="icon">💚</div>
-      <div class="title">GPT</div>
-      <div class="subtitle">Универсальный чат</div>
-    </div>
-    <div class="card" onclick="pick('gemini')">
-      <div class="icon">💙</div>
-      <div class="title">Gemini</div>
-      <div class="subtitle">Быстро и по делу</div>
-    </div>
-    <div class="card" onclick="pick('nanobanana')">
-      <div class="icon">🍌</div>
-      <div class="title">Nano Banana</div>
-      <div class="subtitle">Картинки и фото</div>
-    </div>
-    <div class="card wide" onclick="pick('seedance')">
-      <div class="icon">🎬</div>
-      <div class="text">
-        <div class="title">Seedance</div>
-        <div class="subtitle">Видео по описанию или из фото</div>
-      </div>
-      <div class="arrow">›</div>
-    </div>
-  </div>
 
-  <div class="section-title">Аккаунт</div>
-  <div class="row2">
-    <div class="card" onclick="pick('profile')">
-      <div class="icon">👤</div>
-      <div class="title">Профиль</div>
-      <div class="subtitle">Баланс и настройки</div>
-    </div>
-    <div class="card" onclick="pick('topup')">
-      <div class="icon">💳</div>
-      <div class="title">Пополнить</div>
-      <div class="subtitle">Звёзды Telegram</div>
-    </div>
-    <div class="card" onclick="pick('referral')">
-      <div class="icon">👥</div>
-      <div class="title">Друзья</div>
-      <div class="subtitle">Бесплатные токены</div>
-    </div>
-    <div class="card" onclick="pick('daily')">
-      <div class="icon">🎁</div>
-      <div class="title">Бонус дня</div>
-      <div class="subtitle">Заходи каждый день</div>
-    </div>
-  </div>
+    <textarea id="quickPrompt" maxlength="1000" placeholder="Опиши, что нарисовать…"></textarea>
+    <div class="chips" id="quickStyles"></div>
+    <div class="err" id="quickErr">Сначала опиши, что нарисовать</div>
+    <button class="btn" id="quickBtn">🎨 Нарисовать</button>
 
-  <div class="footer-note">Нажми на карточку — вернёшься в чат с ботом,<br>и он сразу поймёт, что выбрано</div>
+    <div class="label">Быстрый доступ</div>
+    <div class="grid">
+      <div class="tile" data-action="claude"><div class="e">💜</div><div class="t">Claude</div><div class="s" id="sClaude">10 в день бесплатно</div></div>
+      <div class="tile" data-action="gpt"><div class="e">💚</div><div class="t">GPT</div><div class="s">10 в день бесплатно</div></div>
+      <div class="tile" data-action="gemini"><div class="e">💙</div><div class="t">Gemini</div><div class="s">Бесплатно</div></div>
+      <div class="tile" data-action="roles"><div class="e">🎭</div><div class="t">Роли</div><div class="s">11 ролей</div></div>
+    </div>
+  </section>
+
+  <!-- СОЗДАТЬ -->
+  <section class="tab" id="tab-create">
+    <div class="seg">
+      <button class="on" data-kind="image">🎨 Картинка</button>
+      <button data-kind="video">🎬 Видео</button>
+    </div>
+
+    <textarea id="createPrompt" maxlength="1000" placeholder="Опиши картинку подробно: что, где, какой свет и настроение"></textarea>
+
+    <div id="imageOpts">
+      <div class="label">Стиль</div>
+      <div class="chips" id="styles"></div>
+      <div class="label">Качество</div>
+      <div class="chips" id="qualities"></div>
+      <div class="label">Размер</div>
+      <div class="chips" id="aspects"></div>
+    </div>
+
+    <div class="err" id="createErr">Сначала опиши, что создать</div>
+    <button class="btn" id="createBtn">Создать</button>
+    <p style="color:var(--muted); font-size:12px; margin-top:10px; text-align:center;">Хочешь отредактировать своё фото? Пришли его боту с подписью.</p>
+  </section>
+
+  <!-- ПОДПИСКА -->
+  <section class="tab" id="tab-sub">
+    <div class="card" id="subStatus" style="display:none;"></div>
+    <div id="tiers"></div>
+    <p style="color:var(--muted); font-size:12px; text-align:center; margin-top:4px;">За 3 дня и за 1 день до окончания бот напомнит о продлении</p>
+  </section>
+
+  <!-- ПРОФИЛЬ -->
+  <section class="tab" id="tab-profile">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:13px; color:var(--muted);">Баланс</div>
+      <div style="font-size:32px; font-weight:700; margin:4px 0;" id="bigBalance">—</div>
+      <div style="font-size:13px; color:var(--muted);" id="profileTier">Подписки нет</div>
+    </div>
+    <div class="card" style="padding:4px 14px;">
+      <div class="row" data-action="topup"><span>💳 Пополнить</span><span class="r">›</span></div>
+      <div class="row" data-action="referral"><span>👥 Пригласить друзей</span><span class="r">›</span></div>
+      <div class="row" data-action="daily"><span>🎁 Бонус дня</span><span class="r">›</span></div>
+      <div class="row" data-action="favorites"><span>❤️ Мои картинки</span><span class="r">›</span></div>
+      <div class="row" data-action="profile"><span>👤 Подробнее о профиле</span><span class="r">›</span></div>
+    </div>
+    <p style="color:var(--muted); font-size:12px; text-align:center;">Баланс обновляется, когда бот присылает новое меню (после /start или оплаты)</p>
+  </section>
 </div>
 
+<nav class="nav">
+  <button class="on" data-tab="home"><span class="i">🏠</span>Главная</button>
+  <button data-tab="create"><span class="i">✨</span>Создать</button>
+  <button data-tab="sub"><span class="i">⭐</span>Подписка</button>
+  <button data-tab="profile"><span class="i">👤</span>Профиль</button>
+</nav>
+
 <script>
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
+  const tg = window.Telegram && window.Telegram.WebApp;
+  const inTelegram = !!(tg && tg.initData);
+  if (tg) { tg.ready(); tg.expand(); }
+  if (!inTelegram) document.getElementById('demo').style.display = 'block';
 
-    // Подхватываем тему Telegram, если доступна
-    const applyTheme = () => {
-      const p = tg.themeParams || {};
-      if (p.bg_color) document.documentElement.style.setProperty('--bg', p.bg_color);
-      if (p.secondary_bg_color) document.documentElement.style.setProperty('--card', p.secondary_bg_color);
-      if (p.text_color) document.documentElement.style.setProperty('--text', p.text_color);
-      if (p.hint_color) document.documentElement.style.setProperty('--text-secondary', p.hint_color);
-    };
-    applyTheme();
-    tg.onEvent('themeChanged', applyTheme);
+  // Данные приходят от бота в адресе страницы (?b=...&t=...)
+  const q = new URLSearchParams(location.search);
+  const balance = q.get('b') ?? '35';
+  const tierName = q.get('t') || '';
+  const tierUntil = q.get('u') || '';
+  const prices = (q.get('p') || '2,10,18,7').split(',').map(Number); // 1K, 2K, 4K, видео
+  const tiers = (q.get('s') || 'START:199:35:15,BASE:499:100:30,PRO:999:210:50').split(',').map(x => {
+    const [name, stars, tokens, roles] = x.split(':');
+    return { name, stars: +stars, tokens: +tokens, roles: +roles };
+  });
+  const state = {
+    quality: q.get('q') || '1K',
+    aspect: q.get('a') || '1:1',
+    style: q.get('st') || '',
+    kind: 'image',
+  };
 
-    // Баланс передаётся ботом через initData (start_param) — см. бэкенд
-    const params = new URLSearchParams(tg.initData);
-    const balance = tg.initDataUnsafe?.start_param;
+  const STYLES = [['', 'Без стиля'], ['photo', '📸 Фото'], ['anime', '🎬 Аниме'], ['3d', '🧊 3D'],
+                  ['watercolor', '🎨 Акварель'], ['cyberpunk', '🤖 Киберпанк'], ['pixel', '👾 Пиксель']];
+  const QUALITIES = [['1K', prices[0]], ['2K', prices[1]], ['4K', prices[2]]];
+  const ASPECTS = ['1:1', '3:4', '4:3', '9:16', '16:9'];
+
+  // --- Шапка и профиль
+  const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  const firstName = (user && user.first_name) || 'друг';
+  document.getElementById('hello').textContent = 'Привет, ' + firstName + '!';
+  document.getElementById('avatar').textContent = firstName[0].toUpperCase();
+  const tierText = tierName ? '⭐ ' + tierName + (tierUntil ? ' до ' + tierUntil : '') : '';
+  document.getElementById('balanceLine').textContent = '🪙 ' + balance + ' токенов' + (tierText ? ' · ' + tierText : '');
+  document.getElementById('bigBalance').textContent = '🪙 ' + balance;
+  document.getElementById('profileTier').textContent = tierText || 'Подписки нет';
+
+  // --- Чипсы
+  function renderChips(el, items, isOn, onPick) {
+    el.innerHTML = '';
+    items.forEach(([value, text]) => {
+      const c = document.createElement('div');
+      c.className = 'chip' + (isOn(value) ? ' on' : '');
+      c.textContent = text;
+      c.onclick = () => { onPick(value); haptic(); renderAll(); };
+      el.appendChild(c);
+    });
+  }
+  function renderAll() {
+    const pickStyle = v => { state.style = v; };
+    renderChips(document.getElementById('quickStyles'), STYLES.slice(0, 5), v => v === state.style, pickStyle);
+    renderChips(document.getElementById('styles'), STYLES, v => v === state.style, pickStyle);
+    renderChips(document.getElementById('qualities'), QUALITIES.map(([k, p]) => [k, k + ' · ' + p + ' 🪙']),
+                v => v === state.quality, v => { state.quality = v; });
+    renderChips(document.getElementById('aspects'), ASPECTS.map(a => [a, a]), v => v === state.aspect, v => { state.aspect = v; });
+    const imgPrice = QUALITIES.find(x => x[0] === state.quality)[1];
+    document.getElementById('quickBtn').textContent = '🎨 Нарисовать · ' + imgPrice + ' 🪙';
+    document.getElementById('createBtn').textContent = state.kind === 'image'
+      ? '🎨 Нарисовать · ' + imgPrice + ' 🪙' : '🎬 Снять видео · ' + prices[3] + ' 🪙';
+    document.getElementById('imageOpts').style.display = state.kind === 'image' ? 'block' : 'none';
+    document.getElementById('createPrompt').placeholder = state.kind === 'image'
+      ? 'Опиши картинку подробно: что, где, какой свет и настроение'
+      : 'Опиши сцену для видео: что происходит и как движется камера';
   }
 
-  function pick(action) {
-    if (!tg) {
-      alert('Открой это приложение через кнопку в Telegram-боте.');
-      return;
-    }
-    tg.HapticFeedback?.impactOccurred('light');
-    tg.sendData(JSON.stringify({ action }));
-    tg.close();
+  // --- Подписка
+  const tiersEl = document.getElementById('tiers');
+  tiers.forEach((t, i) => {
+    const hot = i === 1, best = i === tiers.length - 1;
+    const d = document.createElement('div');
+    d.className = 'card tier' + (hot ? ' hot' : '');
+    d.innerHTML =
+      (hot ? '<div class="badge">🔥 популярный</div>' : best ? '<div class="badge">💎 самый выгодный</div>' : '') +
+      '<h3>' + t.name + '</h3><div class="price">⭐ ' + t.stars + ' / 30 дней</div>' +
+      '<ul><li>✅ <b>' + t.tokens + ' токенов</b> сразу</li>' +
+      '<li><span>≈ ' + Math.floor(t.tokens / prices[0]) + ' картинок 1K или ' + Math.floor(t.tokens / prices[3]) + ' видео</span></li>' +
+      '<li>✅ Все роли — до ' + t.roles + ' сообщений в день</li></ul>';
+    const b = document.createElement('button');
+    b.className = 'btn' + (hot ? '' : ' ghost');
+    b.textContent = 'Оформить ' + t.name;
+    b.onclick = () => send({ action: 'subbuy', tier: t.name.toLowerCase() });
+    d.appendChild(b);
+    tiersEl.appendChild(d);
+  });
+  if (tierText) {
+    const s = document.getElementById('subStatus');
+    s.style.display = 'block';
+    s.innerHTML = '✅ Активна подписка <b>' + tierName + '</b>' + (tierUntil ? ' до ' + tierUntil : '') +
+                  '<div style="color:var(--muted); font-size:12px; margin-top:4px;">Купишь ещё раз — 30 дней добавятся к оставшимся</div>';
   }
+
+  // --- Навигация
+  document.querySelectorAll('.nav button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.nav button').forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.id === 'tab-' + b.dataset.tab));
+    haptic(); window.scrollTo(0, 0);
+  });
+  document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+    state.kind = b.dataset.kind;
+    document.querySelectorAll('.seg button').forEach(x => x.classList.toggle('on', x === b));
+    haptic(); renderAll();
+  });
+  document.querySelectorAll('[data-action]').forEach(el => el.onclick = () => send({ action: el.dataset.action }));
+
+  // --- Отправка боту
+  function haptic() { tg && tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); }
+  function send(payload) {
+    if (!inTelegram) { alert('Демо-режим: в Telegram это отправилось бы боту:\n' + JSON.stringify(payload)); return; }
+    haptic();
+    tg.sendData(JSON.stringify(payload));  // после этого Telegram сам закроет приложение
+  }
+  function generate(promptEl, errEl, kind) {
+    const prompt = promptEl.value.trim();
+    if (!prompt) { errEl.style.display = 'block'; promptEl.focus(); return; }
+    errEl.style.display = 'none';
+    send(kind === 'video'
+      ? { action: 'generate', kind: 'video', prompt }
+      : { action: 'generate', kind: 'image', prompt, quality: state.quality, aspect: state.aspect, style: state.style });
+  }
+  document.getElementById('quickBtn').onclick = () =>
+    generate(document.getElementById('quickPrompt'), document.getElementById('quickErr'), 'image');
+  document.getElementById('createBtn').onclick = () =>
+    generate(document.getElementById('createPrompt'), document.getElementById('createErr'), state.kind);
+  ['quickPrompt', 'createPrompt'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    document.getElementById(id === 'quickPrompt' ? 'quickErr' : 'createErr').style.display = 'none';
+  }));
+
+  renderAll();
 </script>
 </body>
 </html>
