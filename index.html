@@ -184,6 +184,10 @@
   .gen { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .gen .pp { background: rgba(255,255,255,0.18); padding: 3px 10px; border-radius: 999px; font-size: 14px; }
   .btn.disabled { opacity: .5; box-shadow: none; }
+
+  .mopt.vopt, .mopt.iopt { display: none; }
+  .mlist.img .iopt, .mlist.vid .vopt { display: flex; }
+  .vbadge { background: var(--grad) !important; color: #fff !important; }
 </style>
 </head>
 <body>
@@ -221,12 +225,12 @@
     <div class="h2 mt">AI-модели</div>
     <div class="icons models">
       <div class="ibtn" data-action="nanobanana"><div class="sq"><span class="em">🍌</span></div><div class="nm">Nano<br>Banana 2</div></div>
-      <div class="ibtn off" data-soon="Seedance"><span class="soon">скоро</span><div class="sq"><span class="em">🎬</span></div><div class="nm">Seedance</div></div>
+      <div class="ibtn vid" data-vmodel="kling"><span class="soon vbadge">PRO</span><div class="sq"><span class="em">💎</span></div><div class="nm">Kling 3</div></div>
       <div class="ibtn" data-action="claude"><div class="sq"><span class="em">💜</span></div><div class="nm">Claude</div></div>
       <div class="ibtn off" data-soon="GPT"><span class="soon">скоро</span><div class="sq"><span class="em">💚</span></div><div class="nm">GPT</div></div>
       <div class="ibtn" data-action="gemini"><div class="sq"><span class="em">💙</span></div><div class="nm">Gemini</div></div>
       <div class="ibtn" data-action="roles"><div class="sq"><span class="em">🎭</span></div><div class="nm">Роли</div></div>
-      <div class="ibtn" data-action="daily"><div class="sq"><span class="em">🎁</span></div><div class="nm">Бонус дня</div></div>
+      <div class="ibtn vid" data-vmodel="seedance"><div class="sq"><span class="em">🎬</span></div><div class="nm">Seedance</div></div>
       <div class="ibtn" data-action="subscription"><div class="sq"><span class="em">⭐</span></div><div class="nm">Подписка</div></div>
     </div>
 
@@ -253,16 +257,20 @@
     <textarea class="ptext" id="createPrompt" maxlength="1000"></textarea>
     <div class="err" id="createErr">Сначала опиши, что создать</div>
 
-    <div id="imageOpts2">
+    <div id="modelWrap">
       <div class="model" id="modelBtn">
         <div class="mi">✦</div>
         <div><div class="mn" id="modelName">Nano Banana 2 Lite</div><div class="ms" id="modelSub">Быстро · 1K</div></div>
         <div class="chev">⌄</div>
       </div>
       <div class="mlist" id="modelList">
-        <div class="mopt" data-model="lite"><div><div class="mn">Nano Banana 2 Lite</div><div class="ms">Быстро и выгодно · 1K</div></div><div class="pr" id="prLite"></div></div>
-        <div class="mopt" data-model="pro"><div><div class="mn">Nano Banana 2</div><div class="ms">Высокое качество · 2K / 4K</div></div><div class="pr" id="prPro"></div></div>
+        <div class="mopt vopt" data-vm="seedance"><div><div class="mn">🎬 Seedance</div><div class="ms">Быстро и недорого · 5 сек</div></div><div class="pr" id="prSeed"></div></div>
+        <div class="mopt vopt" data-vm="kling"><div><div class="mn">💎 Kling 3 PRO</div><div class="ms">Топовое качество · 5 сек</div></div><div class="pr" id="prKling"></div></div>
+        <div class="mopt iopt" data-model="lite"><div><div class="mn">Nano Banana 2 Lite</div><div class="ms">Быстро и выгодно · 1K</div></div><div class="pr" id="prLite"></div></div>
+        <div class="mopt iopt" data-model="pro"><div><div class="mn">Nano Banana 2</div><div class="ms">Высокое качество · 2K / 4K</div></div><div class="pr" id="prPro"></div></div>
       </div>
+    </div>
+    <div id="imageOpts2">
       <div class="optrow">
         <div class="opt" id="qBtn"><span class="ic">💎</span><span id="qVal">1K</span></div>
         <div class="opt" id="aBtn"><span class="ic">⬚</span><span id="aVal">Авто</span></div>
@@ -318,12 +326,15 @@
   const balance = q.get('b') ?? '—';
   const tierName = q.get('t') || '';
   const tierUntil = q.get('u') || '';
-  const prices = (q.get('p') || '2,10,18,7').split(',').map(Number);
+  const prices = (q.get('p') || '2,10,18,7,29').split(',').map(Number);
+  if (prices.length < 5) prices.push(29);
+  const videoOn = q.get('v') === '1';
+  const VPRICE = { seedance: prices[3], kling: prices[4] };
   const tiers = (q.get('s') || 'START:199:35:15,BASE:499:100:30,PRO:999:210:50').split(',').map(x => {
     const [name, stars, tokens, roles] = x.split(':');
     return { name, stars: +stars, tokens: +tokens, roles: +roles };
   });
-  const state = { quality: q.get('q') || '1K', aspect: 'auto', kind: 'image', ref: false, count: 1, modelOpen: false };
+  const state = { quality: q.get('q') || '1K', aspect: 'auto', kind: 'image', ref: false, count: 1, modelOpen: false, vmodel: 'seedance' };
 
   // Тренды — ключи совпадают с TRENDS в bot.py. Всегда в 1K (цена prices[0]).
   const TRENDS = [['figure', '🧸', 'Фигурка в коробке'], ['cartoon3d', '🎬', '3D‑мультфильм'],
@@ -371,18 +382,29 @@
     const pro = state.quality !== '1K';
     document.getElementById('ctitle').textContent = img ? 'Изображение' : 'Видео';
     document.getElementById('kindSwitch').textContent = img ? '🎬 Видео' : '🎨 Картинка';
-    document.getElementById('imageOpts').style.display = img ? 'block' : 'none';
+    document.getElementById('imageOpts').style.display = 'block';
     document.getElementById('imageOpts2').style.display = img ? 'block' : 'none';
     document.getElementById('refbox').classList.toggle('on', state.ref);
-    document.getElementById('refTitle').textContent = state.ref ? '✅ Со своим фото' : 'Со своим фото';
+    document.getElementById('refTitle').textContent = (state.ref ? '✅ ' : '') + (img ? 'Со своим фото' : 'Оживить своё фото');
     document.getElementById('refSub').textContent = state.ref
-      ? 'После «Генерировать» бот попросит прислать фото в чат'
-      : 'Нажми, чтобы изменить своё фото по запросу';
-    document.getElementById('modelName').textContent = pro ? 'Nano Banana 2' : 'Nano Banana 2 Lite';
-    document.getElementById('modelSub').textContent = pro ? 'Высокое качество · ' + state.quality : 'Быстро · 1K';
+      ? 'После «' + (img ? 'Генерировать' : 'Снять видео') + '» бот попросит прислать фото в чат'
+      : (img ? 'Нажми, чтобы изменить своё фото по запросу' : 'Нажми — и фото превратится в видео');
+    if (img) {
+      document.getElementById('modelName').textContent = pro ? 'Nano Banana 2' : 'Nano Banana 2 Lite';
+      document.getElementById('modelSub').textContent = pro ? 'Высокое качество · ' + state.quality : 'Быстро · 1K';
+    } else {
+      const kl = state.vmodel === 'kling';
+      document.getElementById('modelName').textContent = kl ? 'Kling 3 PRO' : 'Seedance';
+      document.getElementById('modelSub').textContent = (kl ? 'Топовое качество' : 'Быстро и недорого') + ' · 5 сек · 720p';
+    }
+    const ml = document.getElementById('modelList');
+    ml.classList.toggle('img', img); ml.classList.toggle('vid', !img);
+    document.querySelectorAll('.vopt').forEach(o => o.classList.toggle('on', o.dataset.vm === state.vmodel));
+    document.getElementById('prSeed').textContent = VPRICE.seedance + ' 🪙';
+    document.getElementById('prKling').textContent = VPRICE.kling + ' 🪙';
     document.getElementById('modelBtn').classList.toggle('open', state.modelOpen);
     document.getElementById('modelList').classList.toggle('open', state.modelOpen);
-    document.querySelectorAll('.mopt').forEach(o => o.classList.toggle('on', (o.dataset.model === 'pro') === pro));
+    document.querySelectorAll('.iopt').forEach(o => o.classList.toggle('on', (o.dataset.model === 'pro') === pro));
     document.getElementById('prLite').textContent = prices[0] + ' 🪙';
     document.getElementById('prPro').textContent = 'от ' + prices[1] + ' 🪙';
     document.getElementById('qVal').textContent = state.quality;
@@ -396,19 +418,28 @@
       document.getElementById('genPrice').textContent = priceOf(state.quality) * state.count + ' 🪙';
       document.getElementById('genPrice').style.display = '';
       document.getElementById('createHint').textContent = state.count > 1 ? 'Будет ' + state.count + ' разных вариантов, токены спишутся за каждый' : '';
+    } else if (videoOn) {
+      btn.classList.remove('disabled');
+      document.getElementById('genText').textContent = 'Снять видео';
+      document.getElementById('genPrice').textContent = VPRICE[state.vmodel] + ' 🪙';
+      document.getElementById('genPrice').style.display = '';
+      document.getElementById('createHint').textContent = 'Видео 5 секунд, генерация 30 сек – 2 мин';
     } else {
       btn.classList.add('disabled');
       document.getElementById('genText').textContent = 'Видео скоро 🔜';
       document.getElementById('genPrice').style.display = 'none';
-      document.getElementById('createHint').textContent = 'Seedance подключим совсем скоро';
+      document.getElementById('createHint').textContent = 'Видео подключим совсем скоро';
     }
     document.getElementById('createPrompt').placeholder = img
       ? (state.ref ? 'Что изменить на фото: фон, одежду, стиль…' : 'Опиши сцену, фон, детали и желаемый результат')
-      : 'Опиши сцену для видео: что происходит и как движется камера';
+      : (state.ref ? 'Как должно двигаться фото: улыбается, машет рукой, ветер в волосах…' : 'Опиши сцену для видео: что происходит и как движется камера');
   }
   document.getElementById('refbox').onclick = () => { state.ref = !state.ref; haptic(); renderAll(); };
   document.getElementById('modelBtn').onclick = () => { state.modelOpen = !state.modelOpen; haptic(); renderAll(); };
-  document.querySelectorAll('.mopt').forEach(o => o.onclick = () => {
+  document.querySelectorAll('.vopt').forEach(o => o.onclick = () => {
+    state.vmodel = o.dataset.vm; state.modelOpen = false; haptic(); renderAll();
+  });
+  document.querySelectorAll('.iopt').forEach(o => o.onclick = () => {
     if (o.dataset.model === 'lite') state.quality = '1K';
     else if (state.quality === '1K') state.quality = '2K';
     state.modelOpen = false; haptic(); renderAll();
@@ -483,6 +514,12 @@
     const t = document.getElementById('toast'); t.textContent = text; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
   }
+  document.querySelectorAll('[data-vmodel]').forEach(el => el.onclick = () => {
+    haptic();
+    state.vmodel = el.dataset.vmodel;
+    setKind('video');
+    openTab('create', document.querySelector('.nav .plusbtn'));
+  });
   document.querySelectorAll('[data-soon]').forEach(el => el.onclick = () => { haptic(); toast(el.dataset.soon + ' — скоро будет 🔜'); });
 
   document.querySelectorAll('[data-action]').forEach(el => el.onclick = () => send({ action: el.dataset.action }));
@@ -497,7 +534,11 @@
     const prompt = promptEl.value.trim();
     if (!prompt) { errEl.style.display = 'block'; promptEl.focus(); return; }
     errEl.style.display = 'none';
-    if (kind === 'video') { toast('Видео — скоро будет 🔜'); return; }
+    if (kind === 'video') {
+      if (!videoOn) { toast('Видео — скоро будет 🔜'); return; }
+      send({ action: 'generate', kind: 'video', prompt, model: state.vmodel, ref: state.ref });
+      return;
+    }
     send({ action: 'generate', kind: 'image', prompt, quality: state.quality, aspect: state.aspect,
            count: state.count, ref: state.ref });
   }
