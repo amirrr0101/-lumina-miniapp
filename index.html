@@ -161,6 +161,21 @@
   .lbl { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dim); margin: 16px 4px 8px; display: flex; justify-content: space-between; }
   .lbl span { letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 700; }
   .cards2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .cards3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .cards3 .pick { padding: 12px 10px; } .cards3 .pp { position: static; display: block; margin-top: 6px; }
+  .cards3 .pn { font-size: 13px; }
+  .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 26px; }
+  .tool { position: relative; overflow: hidden; border-radius: 22px; padding: 14px; min-height: 104px; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end;
+          transition: transform .15s; box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+  .tool:active { transform: scale(.96); }
+  .tool .e { position: absolute; top: 10px; right: 12px; font-size: 34px; filter: drop-shadow(0 6px 12px rgba(0,0,0,.35)); }
+  .tool .t { font-weight: 800; font-size: 15px; } .tool .s { font-size: 11px; font-weight: 700; opacity: .85; margin-top: 3px; }
+  .tool .eq { position: absolute; top: 16px; left: 14px; display: flex; gap: 3px; align-items: flex-end; height: 20px; }
+  .tool .eq i { width: 4px; border-radius: 2px; background: rgba(255,255,255,.85); animation: eq 1s ease-in-out infinite; }
+  .tool .eq i:nth-child(2) { animation-delay: .2s; } .tool .eq i:nth-child(3) { animation-delay: .4s; } .tool .eq i:nth-child(4) { animation-delay: .1s; }
+  @keyframes eq { 0%,100% { height: 5px; } 50% { height: 20px; } }
+  .t-music { background: linear-gradient(150deg, #FF6A3D, #C2187A); } .t-tts { background: linear-gradient(150deg, #2BD9A0, #1B6FD8); }
+  .t-photo { background: linear-gradient(150deg, #FFC23D, #E8508A); } .t-omni { background: linear-gradient(150deg, #4DE3FF, #6A3DFF); }
   .pick { position: relative; padding: 13px 12px; border-radius: 18px; background: var(--panel); border: 1.5px solid var(--line); cursor: pointer; transition: all .2s; overflow: hidden; }
   .pick.on { border-color: transparent; background: linear-gradient(var(--panel-2), var(--panel-2)) padding-box, var(--grad) border-box; box-shadow: 0 8px 24px rgba(196,59,255,.25); }
   .pick .pi { font-size: 22px; } .pick .pn { font-weight: 800; font-size: 14px; margin-top: 6px; } .pick .pd { font-size: 11px; color: var(--muted); font-weight: 700; margin-top: 2px; }
@@ -260,12 +275,23 @@
       <div class="q" data-action="theme"><div class="ic ic-th">🌟</div><div class="n">Тема дня</div></div>
     </div>
 
+    <div class="sec"><h2>✨ Новое</h2></div>
+    <div class="tools">
+      <div class="tool t-music" data-action="music"><div class="eq"><i></i><i></i><i></i><i></i></div><div class="e">🎵</div><div class="t">Музыка</div><div class="s">Песня по описанию · от <span class="pMusic">3</span>🪙</div></div>
+      <div class="tool t-tts" data-action="tts"><div class="e">🗣</div><div class="t">Озвучка</div><div class="s">8 голосов · от 1🪙</div></div>
+      <div class="tool t-photo" data-action="phototools"><div class="e">✂️</div><div class="t">Фото-инструменты</div><div class="s">Фон · стикер · улучшить</div></div>
+      <div class="tool t-omni" data-vmodel="omni"><div class="e">🌀</div><div class="t">Gemini Omni</div><div class="s">Видео сразу со звуком</div></div>
+    </div>
+
     <div class="sec"><h2>🔥 В тренде</h2><div class="more" id="allTrends">Все →</div></div>
     <div class="rail" id="rail"></div>
 
     <div class="sec"><h2>Нейросети</h2></div>
     <div class="models">
-      <div class="mdl" data-go="image"><div class="av">🍌</div><div><div class="nm">Nano Banana 2</div><div class="ds">Картинки и правка фото · до 4K</div></div><div class="pr" id="mNano"></div></div>
+      <div class="row2">
+        <div class="mdl" data-im-go="simple"><div class="av">🍌</div><div><div class="nm">Nano Banana 2</div><div class="ds">Картинки · до 4K</div></div><div class="pr" id="mNano"></div></div>
+        <div class="mdl" data-im-go="pro"><div class="av">💎</div><div><div class="nm">Banana<span class="pill">PRO</span></div><div class="ds">Максимум деталей</div></div><div class="pr" id="mPro"></div></div>
+      </div>
       <div class="row2">
         <div class="mdl" data-vmodel="seedance"><div class="av">🎬</div><div><div class="nm">Seedance</div><div class="ds">Видео до 1080p</div></div><div class="pr" id="mSeed"></div></div>
         <div class="mdl" data-vmodel="kling"><div class="av">💎</div><div><div class="nm">Kling 3<span class="pill">PRO</span></div><div class="ds">Кино-видео + звук</div></div><div class="pr" id="mKling"></div></div>
@@ -315,11 +341,11 @@
     <div id="imgOpts">
       <div class="lbl">Модель</div>
       <div class="cards2">
-        <div class="pick" data-im="lite"><div class="pi">⚡</div><div class="pn">Nano Banana 2 Lite</div><div class="pd">Быстро · 1K</div><div class="pp" id="pLite"></div></div>
-        <div class="pick" data-im="pro"><div class="pi">💎</div><div class="pn">Nano Banana 2</div><div class="pd">Детально · 2K / 4K</div><div class="pp" id="pPro"></div></div>
+        <div class="pick" data-im="simple"><div class="pi">🍌</div><div class="pn">Nano Banana 2</div><div class="pd">Быстро · 1K / 2K / 4K</div><div class="pp" id="pLite"></div></div>
+        <div class="pick" data-im="pro"><div class="pi">💎</div><div class="pn">Banana PRO</div><div class="pd">Максимум деталей · 2K / 4K</div><div class="pp" id="pPro"></div></div>
       </div>
       <div id="proQ">
-        <div class="lbl">Качество</div>
+        <div class="lbl">Качество <span id="qNote"></span></div>
         <div class="chips" id="qChips"></div>
       </div>
       <div class="lbl">Формат</div>
@@ -331,12 +357,15 @@
     <!-- Видео -->
     <div id="vidOpts">
       <div class="lbl">Модель</div>
-      <div class="cards2">
-        <div class="pick" data-vm="seedance"><div class="pi">🎬</div><div class="pn">Seedance</div><div class="pd">Быстро и выгодно</div><div class="pp" id="pSeed"></div></div>
-        <div class="pick" data-vm="kling"><div class="pi">💎</div><div class="pn">Kling 3 PRO</div><div class="pd">Кино-качество · звук</div><div class="pp" id="pKling"></div></div>
+      <div class="cards3">
+        <div class="pick" data-vm="seedance"><div class="pi">🎬</div><div class="pn">Seedance</div><div class="pd">Выгодно</div><div class="pp" id="pSeed"></div></div>
+        <div class="pick" data-vm="kling"><div class="pi">💎</div><div class="pn">Kling 3</div><div class="pd">Кино</div><div class="pp" id="pKling"></div></div>
+        <div class="pick" data-vm="omni"><div class="pi">🌀</div><div class="pn">Omni</div><div class="pd">Со звуком</div><div class="pp" id="pOmni"></div></div>
       </div>
-      <div class="lbl">Длительность</div>
-      <div class="chips" id="dChips"></div>
+      <div id="durWrap">
+        <div class="lbl">Длительность</div>
+        <div class="chips" id="dChips"></div>
+      </div>
       <div id="resWrap">
         <div class="lbl">Качество</div>
         <div class="chips" id="rChips"></div>
@@ -405,7 +434,10 @@
   const q = new URLSearchParams(location.search);
   const balance = q.get('b') ?? '—';
   const tierName = q.get('t') || '', tierUntil = q.get('u') || '';
-  const prices = (q.get('p') || '2,10,18,7,29').split(',').map(Number);
+  const prices = (q.get('p') || '2,7,10,7,29').split(',').map(Number);
+  const pp = (q.get('pp') || '10,18').split(',').map(Number);
+  const op = (q.get('op') || '14,42,63').split(',').map(Number);
+  const OP = { '360p': op[0], '720p': op[1], '1080p': op[2] };
   const videoOn = q.get('v') === '1';
   // Цены видео: Seedance 480/720/1080 × 5/10 сек, Kling без звука/со звуком × 5/10 сек
   const vp = (q.get('vp') || '3,6,7,13,15,30,29,58,43,86').split(',').map(Number);
@@ -413,24 +445,28 @@
     seedance: { '480p': { 5: vp[0], 10: vp[1] }, '720p': { 5: vp[2], 10: vp[3] }, '1080p': { 5: vp[4], 10: vp[5] } },
     kling: { 0: { 5: vp[6], 10: vp[7] }, 1: { 5: vp[8], 10: vp[9] } },
   };
-  const vsq = (q.get('vs') || 'seedance,720p,5,9:16,0').split(',');
+  const vsq = (q.get('vs') || 'seedance,720p,5,9:16,0,720p').split(',');
   const tiers = (q.get('s') || 'START:199:35:15,BASE:499:100:30,PRO:999:210:50').split(',').map(x => {
     const [name, stars, tokens, roles] = x.split(':'); return { name, stars: +stars, tokens: +tokens, roles: +roles };
   });
   const state = {
     kind: 'image', ref: false,
     quality: q.get('q') || '1K', aspect: 'auto', count: 1,
-    vmodel: vsq[0] === 'kling' ? 'kling' : 'seedance', res: ['480p', '720p', '1080p'].includes(vsq[1]) ? vsq[1] : '720p',
+    ores: ['360p', '720p', '1080p'].includes(vsq[5]) ? vsq[5] : '720p',
+    vmodel: ['kling', 'omni'].includes(vsq[0]) ? vsq[0] : 'seedance', res: ['480p', '720p', '1080p'].includes(vsq[1]) ? vsq[1] : '720p',
     dur: vsq[2] === '10' ? 10 : 5, vaspect: ['9:16', '16:9', '1:1'].includes(vsq[3]) ? vsq[3] : '9:16', audio: vsq[4] === '1',
   };
-  const PRICE = { '1K': prices[0], '2K': prices[1], '4K': prices[2] };
-  const videoPrice = () => state.vmodel === 'kling' ? VP.kling[state.audio ? 1 : 0][state.dur] : VP.seedance[state.res][state.dur];
+  const PRICE = { '1K': prices[0], '2K': prices[1], '4K': prices[2], 'P2K': pp[0], 'P4K': pp[1] };
+  if (!PRICE[state.quality]) state.quality = '1K';
+  const videoPrice = () => state.vmodel === 'omni' ? OP[state.ores]
+    : state.vmodel === 'kling' ? VP.kling[state.audio ? 1 : 0][state.dur] : VP.seedance[state.res][state.dur];
 
   // ---------- Шапка, профиль ----------
   $('balTop').textContent = balance; $('balBig').textContent = '🪙 ' + balance;
   const tierText = tierName ? '⭐ ' + tierName + (tierUntil ? ' до ' + tierUntil : '') : '';
   $('tierLine').textContent = tierText || 'Подписки нет';
-  $('mNano').textContent = 'от ' + prices[0] + ' 🪙';
+  $('mNano').textContent = 'от ' + prices[0] + ' 🪙'; $('mPro').textContent = 'от ' + pp[0] + ' 🪙';
+  document.querySelectorAll('.pMusic').forEach(e => e.textContent = 3);
   $('mSeed').textContent = 'от ' + VP.seedance['480p'][5] + ' 🪙';
   $('mKling').textContent = 'от ' + VP.kling[0][5] + ' 🪙';
 
@@ -519,50 +555,66 @@
       : (state.ref ? 'Что происходит на видео: улыбается, машет рукой, ветер в волосах…' : 'Опиши сцену: что происходит и как движется камера');
 
     // Картинка
-    const pro = state.quality !== '1K';
+    const pro = state.quality.startsWith('P');
     document.querySelectorAll('[data-im]').forEach(p => p.classList.toggle('on', (p.dataset.im === 'pro') === pro));
-    $('pLite').textContent = prices[0] + ' 🪙'; $('pPro').textContent = 'от ' + prices[1] + ' 🪙';
-    $('proQ').style.display = pro ? 'block' : 'none';
-    chips($('qChips'), [['2K', 'Детально'], ['4K', 'Максимум']], it => it[0] === state.quality, it => state.quality = it[0],
-      it => it[0] + '<small>' + PRICE[it[0]] + ' 🪙</small>');
+    $('pLite').textContent = 'от ' + prices[0] + ' 🪙'; $('pPro').textContent = 'от ' + pp[0] + ' 🪙';
+    $('proQ').style.display = 'block';
+    $('qNote').textContent = pro ? 'Gemini 3 Pro Image' : '1K — Lite, 2K/4K — полная модель';
+    const QOPTS = pro ? [['P2K', '2K', 'Детально'], ['P4K', '4K', 'Максимум']] : [['1K', '1K', 'Быстро'], ['2K', '2K', 'Детально'], ['4K', '4K', 'Максимум']];
+    chips($('qChips'), QOPTS, it => it[0] === state.quality, it => state.quality = it[0],
+      it => it[1] + '<small>' + PRICE[it[0]] + ' 🪙</small>');
     chips($('aChips'), ASPECTS_IMG, it => it[0] === state.aspect, it => state.aspect = it[0], it => shape(it[2], it[3]) + it[1]);
     $('cVal').textContent = state.count;
 
     // Видео
-    const kl = state.vmodel === 'kling';
+    const kl = state.vmodel === 'kling', om = state.vmodel === 'omni';
     document.querySelectorAll('[data-vm]').forEach(p => p.classList.toggle('on', p.dataset.vm === state.vmodel));
     $('pSeed').textContent = 'от ' + VP.seedance['480p'][5] + ' 🪙'; $('pKling').textContent = 'от ' + VP.kling[0][5] + ' 🪙';
+    $('pOmni').textContent = 'от ' + OP['360p'] + ' 🪙';
+    $('durWrap').style.display = om ? 'none' : 'block';
+    if (om && state.vaspect === '1:1') state.vaspect = '9:16';
     chips($('dChips'), [[5], [10]], it => it[0] === state.dur, it => state.dur = it[0],
       it => '⏱ ' + it[0] + ' сек<small>' + (kl ? VP.kling[state.audio ? 1 : 0][it[0]] : VP.seedance[state.res][it[0]]) + ' 🪙</small>');
     $('resWrap').style.display = kl ? 'none' : 'block';
-    chips($('rChips'), [['480p', 'Черновик'], ['720p', 'HD'], ['1080p', 'Full HD']], it => it[0] === state.res, it => state.res = it[0],
+    if (om) chips($('rChips'), [['360p', 'Черновик'], ['720p', 'HD'], ['1080p', 'Full HD']], it => it[0] === state.ores, it => state.ores = it[0],
+      it => it[0] + '<small>' + it[1] + ' · ' + OP[it[0]] + ' 🪙</small>');
+    else chips($('rChips'), [['480p', 'Черновик'], ['720p', 'HD'], ['1080p', 'Full HD']], it => it[0] === state.res, it => state.res = it[0],
       it => it[0] + '<small>' + it[1] + ' · ' + VP.seedance[it[0]][state.dur] + ' 🪙</small>');
-    chips($('vaChips'), ASPECTS_VID.map(a => Object.assign([...a], { dis: state.ref })), it => !state.ref && it[0] === state.vaspect,
+    chips($('vaChips'), ASPECTS_VID.filter(a => !(om && a[0] === '1:1')).map(a => Object.assign([...a], { dis: state.ref })), it => !state.ref && it[0] === state.vaspect,
       it => state.vaspect = it[0], it => shape(it[2], it[3]) + it[1]);
     $('fmtNote').textContent = state.ref ? 'как у твоего фото' : '';
     $('soundWrap').style.display = kl ? 'block' : 'none';
     $('soundSw').classList.toggle('on', state.audio);
-    $('vnote').textContent = kl ? 'Kling снимает в 1080p. Генерация 1–3 минуты.' : 'Генерация 30 сек – 2 мин. 480p — для черновиков, 1080p — для публикации.';
+    $('vnote').textContent = om ? '🔊 Звук, голоса и музыка — сразу в видео. Длина ~6–8 сек, генерация 1–5 минут.'
+      : kl ? 'Kling снимает в 1080p. Генерация 1–3 минуты.' : 'Генерация 30 сек – 2 мин. 480p — для черновиков, 1080p — для публикации.';
 
     // Билет
     const onCreate = document.getElementById('tab-create').classList.contains('active');
     $('ticket').classList.toggle('show', onCreate);
     if (img) {
-      $('tSum').textContent = (pro ? 'Nano Banana 2 · ' + state.quality : 'Nano Banana 2 Lite · 1K') + ' · ' + (state.aspect === 'auto' ? 'авто' : state.aspect) + (state.count > 1 ? ' · ×' + state.count : '');
+      $('tSum').textContent = (pro ? 'Banana PRO · ' + state.quality.slice(1) : state.quality === '1K' ? 'Nano Banana 2 Lite · 1K' : 'Nano Banana 2 · ' + state.quality) + ' · ' + (state.aspect === 'auto' ? 'авто' : state.aspect) + (state.count > 1 ? ' · ×' + state.count : '');
       $('tPrice').textContent = '🪙 ' + PRICE[state.quality] * state.count;
       $('cta').textContent = 'Создать ✦'; $('cta').classList.remove('dis');
     } else {
-      $('tSum').textContent = (kl ? 'Kling 3 PRO · 1080p' : 'Seedance · ' + state.res) + ' · ' + state.dur + ' сек' + (state.ref ? ' · с фото' : ' · ' + state.vaspect) + (kl && state.audio ? ' · 🔊' : '');
-      $('tPrice').textContent = videoOn ? '🪙 ' + videoPrice() : 'скоро';
-      $('cta').textContent = videoOn ? 'Снять 🎬' : 'Скоро 🔜';
-      $('cta').classList.toggle('dis', !videoOn);
+      const ok = videoOn || om;
+      $('tSum').textContent = (om ? 'Gemini Omni · ' + state.ores + ' · ~6–8 сек' : (kl ? 'Kling 3 PRO · 1080p' : 'Seedance · ' + state.res) + ' · ' + state.dur + ' сек')
+        + (state.ref ? ' · с фото' : ' · ' + state.vaspect) + ((kl && state.audio) || om ? ' · 🔊' : '');
+      $('tPrice').textContent = ok ? '🪙 ' + videoPrice() : 'скоро';
+      $('cta').textContent = ok ? 'Снять 🎬' : 'Скоро 🔜';
+      $('cta').classList.toggle('dis', !ok);
     }
   }
 
   $('seg').querySelectorAll('button').forEach(b => b.onclick = () => { haptic(); setKind(b.dataset.kind); });
   $('refcard').onclick = () => { state.ref = !state.ref; haptic(); renderAll(); };
   document.querySelectorAll('[data-im]').forEach(p => p.onclick = () => {
-    haptic(); if (p.dataset.im === 'lite') state.quality = '1K'; else if (state.quality === '1K') state.quality = '2K'; renderAll();
+    haptic();
+    if (p.dataset.im === 'pro') { if (!state.quality.startsWith('P')) state.quality = 'P2K'; }
+    else if (state.quality.startsWith('P')) state.quality = '1K';
+    renderAll();
+  });
+  document.querySelectorAll('[data-im-go]').forEach(el => el.onclick = () => {
+    haptic(); state.quality = el.dataset.imGo === 'pro' ? 'P2K' : '1K'; setKind('image'); openTab('create');
   });
   document.querySelectorAll('[data-vm]').forEach(p => p.onclick = () => { haptic(); state.vmodel = p.dataset.vm; renderAll(); });
   $('sound').onclick = () => { haptic(); state.audio = !state.audio; renderAll(); };
@@ -624,8 +676,8 @@
     const prompt = $('prompt').value.trim();
     if (!prompt) { $('err').style.display = 'block'; $('prompt').focus(); tg && tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('error'); return; }
     if (state.kind === 'video') {
-      if (!videoOn) return toast('Видео — скоро будет 🔜');
-      return send({ action: 'generate', kind: 'video', prompt, model: state.vmodel, res: state.res, dur: state.dur,
+      if (!videoOn && state.vmodel !== 'omni') return toast('Видео — скоро будет 🔜');
+      return send({ action: 'generate', kind: 'video', prompt, model: state.vmodel, res: state.res, ores: state.ores, dur: state.dur,
                     vaspect: state.vaspect, audio: state.audio, ref: state.ref });
     }
     send({ action: 'generate', kind: 'image', prompt, quality: state.quality, aspect: state.aspect, count: state.count, ref: state.ref });
